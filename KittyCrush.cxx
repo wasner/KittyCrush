@@ -562,7 +562,8 @@ namespace KittyCrush
 
 
 
-	bool IsBinary(string Str) // 11110 renvoie true, 102 renvoie false.
+	bool IsBinary(string Str)
+	/* On teste si une string est binaire, si oui renvoie true */
     {
         for (unsigned i (0) ; i < Str.size() ; ++ i)
         {
@@ -573,7 +574,9 @@ namespace KittyCrush
 
     } // IsBinary ()
 
-	string DecToBin (unsigned Nbr) // De décimal vers binaire
+	string DecToBin (unsigned Nbr)
+	/* Conversion du décimal vers binaire, on rentre un nombre entier
+       positif, et on le convertis en une string de NbZero caractères */
     {
             string Binary ( NbZero, '0') ; // Le nombre de zeros, initialisé à 0
             unsigned Pos (0), Local (Nbr) ;
@@ -592,6 +595,7 @@ namespace KittyCrush
     } // DecToBin ()
 
     unsigned BinToDec (string Str) // Pour le décryptage
+    /* On prend une string binaire et on la transforme en un unsigned */
     {
         unsigned NbDec (0), Squared (1) ; // Squared (au carré en anglais) va être multiplié pour faire 1,2,4,8,16
         if (IsBinary (Str))
@@ -619,7 +623,7 @@ namespace KittyCrush
 
 
 
-	const CVStr KeyTab {"0001101101","0101100010", "1000010101", "0000000110" };
+	const CVStr KeyTab {"0001101101","0101100010", "1000010101", "0000000110" }; // Le tableau des clés qui serviront a coder les données
     string CodeXor (string Bin, string Key) // Un ou exclusif sur les string
     {
         if ( (Bin.size() == Key.size()) && IsBinary(Key) )
@@ -637,7 +641,10 @@ namespace KittyCrush
 
     } // CodeXor ()
 
-    string Crypt (unsigned Data, unsigned Key, const CVStr & KeyTab ) // Crypte un unsigned en string binaire
+    string Crypt (unsigned Data, unsigned Key, const CVStr & KeyTab )
+    /* Un compilé des fonctions précédentes pour crypter de mannière simple
+       Data la donnée a crypter, Key la clé actuelle qui va changer à chaque tour
+       et KeyTab le tableau de clés déterminé préalablement */
     {
         if (Key > KeyTab.size() - 1)
             return "Error:Bad_Key" ;
@@ -651,7 +658,7 @@ namespace KittyCrush
 
     } // Crypt ()
 
-    unsigned Decrypt (string StrData, unsigned Key, const CVStr & KeyTab) // Décrypte une string binaire en unsigned
+    unsigned Decrypt (string StrData, unsigned Key, const CVStr & KeyTab) // Décrypte une string binaire en unsigned, le processus inverse du cryptage.
     {
         if (IsBinary(StrData) )
         {
@@ -667,7 +674,7 @@ namespace KittyCrush
 
     void Save (const CMat & Grid, unsigned Turn, unsigned Score, unsigned BestScore, unsigned Size, const CVStr & KeyTab, unsigned MaxTimes )
     {
-        /* ! A ajouter à tous les tours du programme de jeu, c'est la sauvegarde en temps réel */
+        /* La sauvegarde, elle crée un fichier save.txt contenant toutes les données nécéssaires au jeu, et les crypte */
         ofstream SaveFile ("./save.txt", ios::trunc) ;
         unsigned Key ((Turn % KeyTab.size() + 1) - 1 ) ;
         SaveFile << DecToBin(Key) << Separator ; // CRYPTAGE Key (1)
@@ -693,6 +700,7 @@ namespace KittyCrush
 
 
     bool LoadSave (CMat & Grid,const CVStr & KeyTab, unsigned & Score, unsigned & BestScore, unsigned & Turn, unsigned & Size, unsigned & MaxTimes)
+    /* Le chargement de sauvegarde, il agit comme un InitGrid, sauf qu'il prend les données de la sauvegarde existante et s'en sert */
     {
         ifstream SaveFile ("./save.txt") ;
         if (SaveFile)
@@ -711,7 +719,7 @@ namespace KittyCrush
                     WhereSeparator = CryptedSave.find(Separator, Pos) - PreviousPos ; // Le séparateur est déplacé à la case ou il a trouvé - La case du spéarateur précédent
                     CurrentData = CryptedSave.substr(Pos - NbZero, NbZero) ; // Le segment de sauvegarde sur lequel nous allons travailler
                     PreviousPos = WhereSeparator + 1 ; // Pour éviter un problème sur la fonction find
-                    if  (IsBinary(CurrentData) ) // On teste si le segment actuel est binaire
+                    if ( ( CurrentData.size() == NbZero ) && (IsBinary(CurrentData) ) ) // On teste si le segment actuel est binaire
                     {
                         if (WhatSubStr == 1)
                         {
@@ -733,8 +741,8 @@ namespace KittyCrush
                                 for (CMat::iterator GridIter (Grid.begin ()); GridIter < Grid.end (); ++GridIter)
                                     *GridIter = CVLine (Size) ;
                             }
-							else if (WhatSubStr == 5 ) // CINQUIEME DONNEE : Le tour
-								Turn = DecryptCurData ;
+                            else if (WhatSubStr == 5 ) // CINQUIEME DONNEE : Le tour
+                                Turn = DecryptCurData ;
                             else if (WhatSubStr == 6) // SIXIEME DONNEE : Le niveau
                                 MaxTimes = DecryptCurData ;
                             else if (WhatSubStr > 6 ) // SEPTIEME DONNEE : Le tableau
@@ -753,21 +761,20 @@ namespace KittyCrush
                         WhatSubStr += 1 ;
                     }
                     else
-                        return true;
+                        return true ;
                 }
             }
         }
         else
         {
             cout << "Sauvegarde Inexistante" << endl ;
-            // Cela ne devrait jamais arriver si on ne propose pas a l'utilisateur de charger quand il y a pas de sauvegarde.
+            // S'il n'y a pas de sauvegarde
             return true;
         }
 
         return false;
 
     } // LoadSave ()
-
 
 
 	void SaisieLigneCol (unsigned & Result, const CMat & Grid, const string & Invite)
@@ -846,13 +853,13 @@ namespace KittyCrush
 			{
 			    cout << "Sauvegarde corrompue" << endl
 			         << "Lancement d'une nouvelle partie..." << endl;
-				
+
 				#ifdef _WIN32
 					Sleep (3000);
 				#else
 					sleep (3);
 				#endif
-				
+
 				Size = 6;
 				MaxTimes = 6;
 				NbCandies = 4;
