@@ -1,3 +1,13 @@
+/**
+ *
+ * @file   KittyCrush.cxx
+ *
+ * @author Romain ROUX, Hugo ROS, David SAIGNE, Florian THIBAULT, Jérémy WASNER
+ *
+ * @date   12/01/2015
+ *
+**/
+
 #include <iostream>
 #include <fstream> // Lecture, écriture de fichiers
 #include <sstream> // Utilisation des stringstream : commande de mouvement
