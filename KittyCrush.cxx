@@ -1,12 +1,14 @@
 /**
+ * @file KittyCrush.cxx
  *
- * @file   KittyCrush.cxx
+ * @brief Main file of the Kitty Crush game
  *
- * @author Romain ROUX, Hugo ROS, David SAIGNE, Florian THIBAULT, Jérémy WASNER
+ * @author David SAIGNE, Florian THIBAULT, Hugo ROS, Jérémy WASNER, Romain ROUX
  *
- * @date   12/01/2015
+ * @version 9.1
  *
-**/
+ * @date january 12 2015
+ */
 
 #include <iostream>
 #include <fstream> // Lecture, écriture de fichiers
@@ -27,25 +29,41 @@
 
 using namespace std;
 
-
+/** @brief Namespace containing all the necessary functions for the game to run */
 namespace KittyCrush
 {
+	/** @brief Alias to a vector of unsigned, represents a line of the matrix */
     typedef vector <unsigned> CVLine; 				// un type représentant une ligne de la grille
+	
+	/** @brief Alias to the Matrix / Grid */
     typedef vector <CVLine> CMat; 					// un type représentant la grille
+	
+	/** @brief Represents a pair (unsigned, unsigned) : a position in the matrix 
+	 *	1st element is coordinate on the x-axis, 2nd element is the coordinate on the y-axis */
     typedef pair <unsigned, unsigned> CPosition; 	// une position dans la grille
+	
+	/** @brief Alias to a vector of strings */
     typedef vector <string> CVStr ;                 // Un tableau de string pour le tableau de clef
 
 
 		/* Constantes */
+	/** @brief Value of an empty cell in the grid */
     const unsigned KImpossible (0); // valeur pour laquelle une case est considérée comme vide
+	
+	/** @brief Maximum number we can save in the save file */
     const unsigned RealMax (1023) ; // Les deux lignes suivantes : pour les fonctions de conversion
+	
+	/** @brief Needed for save convertion */
     const unsigned NbMax (RealMax / 2 + 1) ;
+	
+	/** @brief Length of the binary segments in the save file */
     const unsigned NbZero (ceil ( log2 (RealMax) ) ) ;
-    const unsigned NbCandies (10) ;
+	
+	/** @brief Character to separate binary segments */
     const char Separator ('O') ; // Séparateur dans la sauvegarde
 
 
-
+	/** @brief Clears the terminal screen */
     void ClearScreen () // Linux
     {
 		#ifdef _WIN32
@@ -57,16 +75,28 @@ namespace KittyCrush
     } // ClearScreen ()
 
     const string KReset   ("0");
+	/** @brief Alias to the black color */
     const string KNoir    ("30");
+	/** @brief Alias to the red color */
     const string KRouge   ("31");
+	/** @brief Alias to the green color */
     const string KVert    ("32");
+	/** @brief Alias to the yellow color */
     const string KJaune   ("33");
+	/** @brief Alias to the blue color */
     const string KBleu    ("34");
+	/** @brief Alias to the magenta color */
     const string KMagenta ("35");
+	/** @brief Alias to the cyan color */
     const string KCyan    ("36");
+	/** @brief Alias to the black character background */
     const string KNoirBG  ("40");
-	const string KJauneBG ("46");
+	/** @brief Alias to the cyan character background */
+	const string KCyanBG ("46");
 
+	/** @brief Display the next characters in the specified color
+	 *	@param Couleur The color in which to display the next characters
+	 */
     void Couleur (const string & Couleur)
     {
         cout << "\033[" << Couleur << "m";
@@ -75,7 +105,9 @@ namespace KittyCrush
 
 
 
-	/* Vide le buffer clavier */
+	/**
+    *@brief Clear Buffer
+    */
 	void ClearBuf ()
 	{
 		cin.ignore (numeric_limits<streamsize>::max (), '\n');
@@ -90,6 +122,12 @@ namespace KittyCrush
 		on affiche Erreur puis on réaffiche Invite et on redemande une Saisie jusqu'à ce qu'elle soit correcte
 		--> Inutile pour la saisie en une ligne <-- */
 
+	/**
+    *@brief Input cin with error handling
+    *@param Saisie the variable that you will change
+    *@param Error the error message if the cin fails.
+    *@param Invite the message displayed before the invite
+    */
     template <typename Type>
     void SaisieCin (Type & Saisie, string Erreur, string Invite = "")
     {
@@ -105,11 +143,19 @@ namespace KittyCrush
             cin >> Saisie;
         }
 
-		/* Vide ce qui reste dans le buffer avant de quitter la fonction */
+
 		ClearBuf ();
 
     } // SaisieCin ()
 
+	/**
+    *@brief Input for menu
+    *@param Choix is your choice in the menu
+    *@param NbChoixMax is the max choice in the menu
+    *@param Erreur the error message
+    *@param Message the message before cin
+    * Do a menu input, then check if the choice is correct
+    */
 	void MenuPrompt (unsigned & Choix, unsigned NbChoixMax, const string & Erreur = "Choix invalide", const string & Message = "Votre choix : ")
 	{
 		/* L'utilisateur choisit parmi les différentes options du menu */
@@ -124,7 +170,9 @@ namespace KittyCrush
 	} // MenuPrompt ()
 
 
-
+	/**
+    *@brief Check all fics in your current directory
+    */
 	bool AllFilesAreValid () // Vérifie si tous les fichiers nécessaires au jeu sont présents
 	{
 		//ifstream Save
@@ -135,7 +183,10 @@ namespace KittyCrush
 	} // AllFilesAreValid ()
 
 
-
+	/**
+    *@brief Displays title screen
+    * If you don't have TitleScreen.txt, it will display a generic one.
+    */
 	void DisplayTitleScreen () // Affiche l'écran titre
 	{
 		ClearScreen ();
@@ -155,6 +206,10 @@ namespace KittyCrush
 
 	} // DisplayTitleScreen ()
 
+	/**
+    *@brief Displays main menu
+    *@param ErrorMsg is the message displayed in case of error
+    */
 	void DisplayMainMenu (const string & ErrorMsg) // Affiche le menu
 	{
 		ClearScreen ();
@@ -173,6 +228,9 @@ namespace KittyCrush
 
 	} // DisplayMainMenu ()
 
+	/**
+    *@brief Displays Credits.txt
+    */
 	void DisplayCredits () // Affiche les crédits
 	{
 		ClearScreen ();
@@ -194,7 +252,10 @@ namespace KittyCrush
 	} // DisplayCredits ()
 
 
-
+	/**
+    *@brief Options : Chose how you want to input the command in the game
+    *@param Choices an array of the 2 types of choices
+    */
 	void DisplayChoixSaisie (array <unsigned, 2> & Choices)
 	{
 		unsigned Choix;
@@ -211,6 +272,10 @@ namespace KittyCrush
 
 	} // DisplayChoixSaisie ()
 
+	/**
+    *@brief Options : Chose if you want Line or Column first in the game
+    *@param Choices an array of the 2 types of choices
+    */
 	void DisplayLineColumnFirst (array <unsigned, 2> & Choices)
 	{
 		unsigned Choix;
@@ -235,6 +300,10 @@ namespace KittyCrush
 	char KeyLeft ('a');
 	char KeyRight ('e');
 
+	/**
+    *@brief Options : Change movement Keys menu
+    * Allows the player to change his binds
+    */
 	void ChangeMvtKeysMenu ()
 	{
 		ClearScreen ();
@@ -259,13 +328,19 @@ namespace KittyCrush
 
 	} // ChangeMvtKeysMenu ()
 
+	/**
+    *@brief Display movements keys
+    */
 	void DisplayMovementKeys ()
 	{
 		cout << KeyUp << " : haut, " << KeyDown << " : bas, " << KeyLeft << " : gauche, " << KeyRight << " : droite" << endl;
 
 	} // DisplayMovementKeys ()
 
-
+	/**
+    *@brief Displays options menu
+    *@param Choices is the choices that you can do
+    */
 	void DisplayOptions (array <unsigned, 2> & Choices)
 	{
 		const unsigned ValeurChoixMax (4);
@@ -300,7 +375,11 @@ namespace KittyCrush
 	} // DisplayOptions ()
 
 
-
+	/**
+    *@brief Display game's Grid
+    *@param Grid you need to know what to display
+    *@param Message display a message with your grid
+    */
     void DisplayGrid (const CMat & Grid, const string & Message = "")
     {
         ClearScreen ();
@@ -350,7 +429,10 @@ namespace KittyCrush
     } // DisplayGrid ()
 
 
-
+	/**
+    *@brief Check if the direction is valid
+    *@param Direction the input direction
+    */
 	bool IsValidDirection (char Direction)
 	{
 		return (Direction == KeyUp || Direction == KeyDown || Direction == KeyLeft || Direction == KeyRight);
@@ -365,6 +447,12 @@ namespace KittyCrush
 
 	} // IsValidPosition ()
 
+	/**
+    *@brief Check if the move is valid
+    *@param Grid check it with grid's help
+    *@param CPosition the position of the number you want to move
+    *@param Direction where do you want to move this number
+    */
 	bool IsValidMove (const CMat & Grid, const CPosition & Pos, char Direction)
 	{
 		CPosition PosTest;
@@ -389,6 +477,12 @@ namespace KittyCrush
 
 
 	/* S'assurer que le mouvement est possible avec IsValidMove avant d'executer cette fonction */
+    /**
+    *@brief Make a move
+    *@param Grid in the grid
+    *@param Pos the number you will move
+    *@param where you want to move it
+    */
     void MakeAMove (CMat & Grid, const CPosition & Pos, char Direction)
     {
 		if (Direction == KeyUp)
@@ -406,7 +500,12 @@ namespace KittyCrush
     } // MakeAMove ()
 
 
-
+	/**
+    *@brief At least three numbers in a column
+    *@param Grid in the Grid
+    *@param CPosition check every case of the grid
+    *@param HowMany count the numbers in a column
+    */
     bool AtLeastThreeInAColumn (const CMat & Grid, CPosition & Pos, unsigned & HowMany)
     {
 		/*	On se place sur la première case de la colonne et on stocke sa valeur dans NbPrec
@@ -450,6 +549,12 @@ namespace KittyCrush
 
     } // AtLeastThreeInAColumn ()
 
+	/**
+    *@brief At least three numbers in a row
+    *@param Grid in the Grid
+    *@param CPosition check every case of the grid
+    *@param HowMany count the numbers in a column
+    */
     bool AtLeastThreeInARow (const CMat & Grid, CPosition & Pos, unsigned & HowMany)
     {
 		/*	Même procédé que pour les colonnes.. */
@@ -481,6 +586,12 @@ namespace KittyCrush
 
 
 	/* Pos désigne la position du début de la suite et HowMany la longueur de cette suite */
+    /**
+    *@brief Removal in column
+    *@param Grid game's grid
+    *@param CPosition the position of a number to remove
+    *@param HowMany how many numbers do it have to remove
+    */
     void RemovalInColumn (CMat & Grid, const CPosition & Pos, unsigned HowMany)
     {
 		/* On remplace les cases de la suite par des cases vides (cases qui ont pour valeur KimPossible) */
@@ -499,6 +610,12 @@ namespace KittyCrush
 
     } // RemovalInColumn ()
 
+    /**
+    *@brief Removal in Row
+    *@param Grid game's grid
+    *@param CPosition the position of a number to remove
+    *@param HowMany how many numbers do it have to remove
+    */
     void RemovalInRow (CMat & Grid, const CPosition & Pos, unsigned HowMany)
     {
         for (unsigned j (Pos.second); j < Pos.second + HowMany; ++j)
@@ -518,7 +635,13 @@ namespace KittyCrush
     } // RemovalInRow ()
 
 
-
+    /**
+    *@brief Initialize the Grid
+    *@param Grid the grid to initialize
+    *@param Size how many column and row
+    *@param NbCandies the maximum number that you can find in this grid
+    * Initialize a random grid with chosen parameters
+    */
 	void InitGrid (CMat & Grid, unsigned Size, unsigned NbCandies)
     {
         srand (time (NULL)); 	// Initialise la génération aléatoire (en fonction du temps système)
@@ -543,6 +666,11 @@ namespace KittyCrush
     } // InitGrid ()
 
 	/*	Détecte et supprime les suites de nombres identiques */
+    /**
+    *@brief Arrange Grid
+    *@param Grid the grid to arrange
+    *@param Score calculate the score
+    */
     void ArrangeGrid (CMat & Grid, unsigned & Score)
     {
         CPosition Pos;
@@ -570,8 +698,10 @@ namespace KittyCrush
 
 	} // ArrangeGrid ()
 
-
-
+    /**
+    *@brief Test if a string is binary
+    *@param Str the string to test
+    */
 	bool IsBinary(string Str)
 	/* On teste si une string est binaire, si oui renvoie true */
     {
@@ -584,6 +714,11 @@ namespace KittyCrush
 
     } // IsBinary ()
 
+    /**
+    *@brief Decimal to binary
+    *@param Nbr the number to convert
+    * Convert a number to a X number binary string
+    */
 	string DecToBin (unsigned Nbr)
 	/* Conversion du décimal vers binaire, on rentre un nombre entier
        positif, et on le convertis en une string de NbZero caractères */
@@ -604,6 +739,10 @@ namespace KittyCrush
 
     } // DecToBin ()
 
+    /**
+    *@brief Binary to decimal
+    *@param Str the string to convert
+    */
     unsigned BinToDec (string Str) // Pour le décryptage
     /* On prend une string binaire et on la transforme en un unsigned */
     {
@@ -624,6 +763,10 @@ namespace KittyCrush
 
     } // BinToDec ()
 
+    /**
+    *@brief Existing save
+    Test if the save file exists
+    */
     bool ExistingSave () // Le dossier de sauvegarde existe-t-il ?
     {
         ifstream SaveFile ("./save.txt") ;
@@ -634,6 +777,11 @@ namespace KittyCrush
 
 
 	const CVStr KeyTab {"0001101101","0101100010", "1000010101", "0000000110" }; // Le tableau des clés qui serviront a coder les données
+    /**
+    *@brief Do a exclusive or in a binary string
+    *@param Bin the string to code
+    *@param Key the key to do a XOR with
+    */
     string CodeXor (string Bin, string Key) // Un ou exclusif sur les string
     {
         if ( (Bin.size() == Key.size()) && IsBinary(Key) )
@@ -651,6 +799,12 @@ namespace KittyCrush
 
     } // CodeXor ()
 
+    /**
+    *@brief Crypt a number
+    *@param Data the number to crypt
+    *@param Key the key to crypt with
+    *@param KeyTab a vector who contains the keys
+    */
     string Crypt (unsigned Data, unsigned Key, const CVStr & KeyTab )
     /* Un compilé des fonctions précédentes pour crypter de mannière simple
        Data la donnée a crypter, Key la clé actuelle qui va changer à chaque tour
@@ -668,6 +822,12 @@ namespace KittyCrush
 
     } // Crypt ()
 
+    /**
+    *@brief Uncrypt
+    *@param StrData the string to uncrypt
+    *@param Key the key to do the uncrpyt
+    *@param KeyTab a vector who contains the keys
+    */
     unsigned Decrypt (string StrData, unsigned Key, const CVStr & KeyTab) // Décrypte une string binaire en unsigned, le processus inverse du cryptage.
     {
         if (IsBinary(StrData) )
@@ -680,8 +840,16 @@ namespace KittyCrush
 
     } // Decrypt ()
 
-
-
+    /**
+    *@brief Save the game in save.txt
+    *@param Grid the game grid
+    *@param Turn parameter of the game
+    *@param Score parameter of the game
+    *@param BestScore parameter of the game
+    *@param Size parameter of the game
+    *@param KeyTab vector who contains every keys
+    *@param MaxTimes parameter of the game
+    */
     void Save (const CMat & Grid, unsigned Turn, unsigned Score, unsigned BestScore, unsigned Size, const CVStr & KeyTab, unsigned MaxTimes )
     {
         /* La sauvegarde, elle crée un fichier save.txt contenant toutes les données nécéssaires au jeu, et les crypte */
@@ -707,8 +875,16 @@ namespace KittyCrush
 
     } // Save ()
 
-
-
+    /**
+    *@brief Acts like InitGrid and load save.txt
+    *@param Grid the game grid
+    *@param KeyTab vector who contains every keys
+    *@param Score parameter of the game
+    *@param BestScore parameter of the game
+    *@param Turn parameter of the game
+    *@param Size parameter of the game
+    *@param MaxTimes parameter of the game
+    */
     bool LoadSave (CMat & Grid,const CVStr & KeyTab, unsigned & Score, unsigned & BestScore, unsigned & Turn, unsigned & Size, unsigned & MaxTimes)
     /* Le chargement de sauvegarde, il agit comme un InitGrid, sauf qu'il prend les données de la sauvegarde existante et s'en sert */
     {
@@ -757,7 +933,7 @@ namespace KittyCrush
                                 MaxTimes = DecryptCurData ;
                             else if (WhatSubStr > 6 ) // SEPTIEME DONNEE : Le tableau
                             {
-                                if (DecryptCurData > NbCandies) // Si la donnée est supérieure à la difficulté, renvoie erreur
+                                if (DecryptCurData > MaxTimes) // Si la donnée est supérieure à la difficulté, renvoie erreur
                                     return true;
                                 Grid[PosX][PosY] = DecryptCurData ;
                                 PosY += 1 ;
@@ -786,7 +962,12 @@ namespace KittyCrush
 
     } // LoadSave ()
 
-
+    /**
+    *@brief Check if the number is in column or row in a cin
+    *@param Result check if the input isn't superior than grid's size
+    *@param Grid the game's grid
+    *@param An invit before the cin
+    */
 	void SaisieLigneCol (unsigned & Result, const CMat & Grid, const string & Invite)
 	{
 		SaisieCin (Result, "Erreur de saisie", Invite);
@@ -801,6 +982,11 @@ namespace KittyCrush
 
 
 	/* Fonction principale contenant le jeu */
+    /**
+    *@brief Kitty Crush, the game itself
+    *@param OptionsChoices to check your choosen options
+    *@param LoadExistingSave if you choose to load a save
+    */
 	void Game (const array <unsigned, 2> & OptionsChoices, bool LoadExistingSave)
 	{
 		/* Il est possible de les modifier pour faire des niveaux de difficulté */
@@ -1043,7 +1229,9 @@ int main ()
 		sleep (3);
 	#endif
 
+	/** @brief An array containing the options chosen in the options menu */
 	array <unsigned, 2> OptionsChoices {0, 0}; // Dans l'ordre : mode de saisie, ordre de saisie ligne/colonne
+	/** @brief Message to display below the main menu */
     string ErrorMsg ("");
 	const unsigned ValeurChoixMax (5);
 	unsigned Choix (0);
