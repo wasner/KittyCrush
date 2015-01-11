@@ -1,0 +1,92 @@
+Une fois le programme de base maîtrisé, nous avons pensé à plusieurs modifications et fonctionnalités à implanter dans le jeu. En voici une liste exhaustive:
+
+1)Création d'un logo
+	Pour plus s'approprier le jeu, nous l'avons renommé. Un logo correspondant accueille l'utilisateur pendant deux secondes au lancement du programme.
+
+2)Création d'un menu.
+	Après l'affichage du logo, un menu permet de sélectionner un choix parmi les suivants: -Nouvelle Partie
+											       -Charger Partie
+											       -Options
+											       -Credits
+											       -Meilleurs Scores
+											       -Quitter
+3)Charger le fichier de sauvegarde ou commencer une nouvelle partie.
+	Un choix est proposé pour le joueur entre débuter une nouvelle partie et continuer sa dernière partie, si il a déjà joué.
+
+4)Création d'une sauvegarde de la partie en temps réel.  
+	La partie courante est sauvegardé à chaque tour automatiquement dans un fichier texte "save.txt". Une seule partie peut être sauvegardée à la fois. Une option dans le menu permet de charger la partie sauvegardée.
+
+5)Crytage du fichier de sauvegarde.
+	Les données écrites sur le fichier de sauvegarde "save.txt" sont cryptées grâce au système de cryptage XOR pour empêcher tout changement par un utilisateur. Lors de leur chargement, elles sont décryptées.
+
+6)Rendre le jeu 'cross plateform'.
+	Le jeu est exécutable par différents systèmes d'exploitations, tels que les versions récentes de Windows, MacOS, et GNU/Linux, étant actuellement les plus répandus.
+
+77)Afficher le score de la partie
+	Chaque coup réalisé rapporte un montant de points proportionnel au nombres détruits. Le total de ces points est affiché à la fin de la partie.
+
+8)Ajout d'un système de bonus.
+	Si un coup implique plus de deux lignes ou colonnes successives, le joueur reçoit un bonus au score.
+
+9)Réaliser un tableau des scores.
+	Les trois meilleurs scores sont stockés sur un fichier "Scores" et mis à jour automatiquement à chaque partie terminée. Ils sont consultables grâce à une option du menu ou si le joueur réalise une performance.
+
+10)Modifier le système de contrôle
+	Pour jouer un coup, le joueur doit écrire les numéros de coordonnées des abysses et des ordonnées de la première case à échanger suivi d'un espace, puis la direction de la seconde case à échanger.
+
+11)Ajouter un nombre de coups maximum.
+	Le jeu comporte un nombre de coups autorisés maximum, une fois ce nombre dépassé, la partie se termine et affiche le score.
+
+12)Faire un système de niveau.
+	Le jeu comporte quartes choix de niveaux différents, faisant varier la taille de la grille, le nombre de coups maximum, ainsi que le nombre de chiffres différents.
+
+13)Afficher un numéro de ligne et de colonne.
+	Le jeu comporte une aide entourant la grille qui indique les numéros de lignes et de colonnes
+
+Nous avons aussi testé notre programme pour traquer des erreurs dans tous les cas possibles par l'utilisateur. Voici une liste des tests que nous avons effectué:
+
+1)Nous avons testé la sauvegarde en faisant des plusieurs parties, des coups gagnants, non gagnants, partie sans coup, avec un coup, plusieurs coups, nous avons réfléchis à plusieurs possibilités pour mieux prendre en compte les erreurs.
+
+2)Nous nous sommes basés sur le fichier de sauvegarde, on à regarder si la 
+  fonction de cryptage fonctionner, si on arriver à décrypter les données
+  et si elle n'était pas corrompue, on à procéder au même test que précédemment.
+
+3)Nous avons utilisés le même programme écrit en c++ sur un ordinateur utilisant
+  l'os Linux puis nous avons testé sur un ordinateur possédant Windows 7 et 8.1
+  enfin nous avons lancé le programme dans un environnement virtualisé Mac os.
+  Notre programme étant le même et s'exécutant de manière correcte sur tous les
+  OS, on en à conclue que notre programme était 'cross plateform'.
+
+4)Nous avons fait deux niveaux, puis on à testé que les fonctionnalités qui 
+  fonctionné sur le niveau de base. Une fois que tous était bon sur deux niveaux
+  on est passé à trois niveaux puis quatre.
+
+5)On à tester de faire un logo en mode console, puis au vue de la compatibilité
+  restreinte ainsi que de la difficultés, nous avons opter pour un fichier texte
+  à part on s’affranchit donc des problèmes d'encodage et une compatibilité parfaite
+  sur tous les os. Le menu est simple, les choix sont fait au moyen des chiffres entrer 
+  directement au moyen du clavier.
+
+6)Nous avons testé le nombre maximum de coup en mettant au départ un nombre réduit 
+  de coup, pour voir que arriver à notre maximum la partie s'arrête. Pour le tester
+  on à essayer avec un grand nombres de parties, puis en augmentant le nombre de coups.
+
+7)Pour le chargement de sauvegarde on à essayer de sauvegarder plusieurs parties
+  et de les charger pour voir s'il revenait dans l'état ou on l'avais quitter.
+  De plus, on a essayer de modifier la sauvegarde et de la charger, effectivement
+  on à bien un message d’erreur comme quoi le fichier de sauvegarde est corrompue.
+  On a essayer aussi de commencer une nouvelle partie, cela recommence bien de zéros.
+
+8)Le système de bonus à était réaliser très simplement, on à tester quand on faisait 
+  une suppression multiple en un seul coup, les points de ce déplacement était doubler
+  On a essayer en faisant des déplacement pour supprimer une ligne, deux voir trois
+  les résultats on montrer que dans bon nombres de cas, la fonction fonctionne.
+
+9)Malheureusement nous n'avons pas pu implémenter totalement cette fonctionnalités
+  à cause d'un problème de segmentation et par un très léger manque de temps.
+
+10) On a pu tester ces numéros de lignes et de colonnes assez simplement
+    grâce au différents niveaux, on à pu voir si les numéros correspondais bien.
+    De plus, la couleur du fond étant différents pour ses nombres la, il est 
+    très facile de repérer les problèmes lié a ceux-ci. Tous les nombres
+    sont bien positionné.
