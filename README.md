@@ -1,2 +1,2 @@
 # KittyCrush
-Projct C++ NumberCrush by student of IUT Informatique Aix-En-Provence
+Number Crush, a C++ Project by Aix-en-Provence computer-science University's students.
