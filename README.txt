@@ -8,6 +8,7 @@ This GitHub project contains - KittyCrush.cxx
 		   	     - TitleScreen.txt
 			     - Credits.txt
 			     - readme.txt
+			     - Fonctionalités et tests d'erreurs.txt
 
 In case of trouble compiling or executing Kitty Crush, please report your problem at projetcppgrp5@gmail.com.
 
