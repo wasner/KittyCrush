@@ -1,0 +1,17 @@
+Kitty Crush
+
+Jeu développé par :
+- Romain ROUX 
+- Hugo ROS 
+- David SAIGNE 
+- Florian THIBAULT 
+- Jeremy WASNER
+
+Ecrit dans son intégralité en langage C++11 dans le cadre
+du projet C++ de l'IUT d'Aix-en-Provence.
+
+Pour tout retour sur le jeu, contactez nous à l'adresse suivante :
+projetcppgrp5@gmail.com
+
+Un message que vous ne comprenez pas ?
+http://www.dcode.fr/code-morse
