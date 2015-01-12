@@ -43,24 +43,7 @@ namespace KittyCrush
     typedef pair <unsigned, unsigned> CPosition; 	// une position dans la grille
 	
 	/** @brief Alias to a vector of strings */
-    typedef vector <string> CVStr ;                 // Un tableau de string pour le tableau de clef
-
-
-		/* Constantes */
-	/** @brief Value of an empty cell in the grid */
-    const unsigned KImpossible (0); // valeur pour laquelle une case est considérée comme vide
-	
-	/** @brief Maximum number we can save in the save file */
-    const unsigned RealMax (1023) ; // Les deux lignes suivantes : pour les fonctions de conversion
-	
-	/** @brief Needed for save convertion */
-    const unsigned NbMax (RealMax / 2 + 1) ;
-	
-	/** @brief Length of the binary segments in the save file */
-    const unsigned NbZero (ceil ( log2 (RealMax) ) ) ;
-	
-	/** @brief Character to separate binary segments */
-    const char Separator ('O') ; // Séparateur dans la sauvegarde
+    typedef vector <string> CVStr;                 // Un tableau de string pour le tableau de clef
 
 
 	/** @brief Clears the terminal screen */
@@ -73,26 +56,41 @@ namespace KittyCrush
 		#endif
 
     } // ClearScreen ()
+	
+	/** @brief Value of an empty cell in the grid */
+    const unsigned KImpossible = 0;
+	
+	/** @brief Maximum number we can save in the save file */
+    const unsigned RealMax = 1023; // Les deux lignes suivantes : pour les fonctions de conversion
+	
+	/** @brief Needed for save convertion */
+    const unsigned NbMax = RealMax / 2 + 1;
+	
+	/** @brief Length of the binary segments in the save file */
+    const unsigned NbZero = ceil ( log2 (RealMax) );
+	
+	/** @brief Character to separate binary segments */
+    const char Separator = 'O'; // Séparateur dans la sauvegarde
 
-    const string KReset   ("0");
+    const string KReset = "0";
 	/** @brief Alias to the black color */
-    const string KNoir    ("30");
+    const string KNoir = "30";
 	/** @brief Alias to the red color */
-    const string KRouge   ("31");
+    const string KRouge = "31";
 	/** @brief Alias to the green color */
-    const string KVert    ("32");
+    const string KVert = "32";
 	/** @brief Alias to the yellow color */
-    const string KJaune   ("33");
+    const string KJaune = "33";
 	/** @brief Alias to the blue color */
-    const string KBleu    ("34");
+    const string KBleu = "34";
 	/** @brief Alias to the magenta color */
-    const string KMagenta ("35");
+    const string KMagenta = "35";
 	/** @brief Alias to the cyan color */
-    const string KCyan    ("36");
+    const string KCyan = "36";
 	/** @brief Alias to the black character background */
-    const string KNoirBG  ("40");
+    const string KNoirBG = "40";
 	/** @brief Alias to the cyan character background */
-	const string KCyanBG ("46");
+	const string KCyanBG = "46";
 
 	/** @brief Display the next characters in the specified color
 	 *	@param Couleur The color in which to display the next characters
@@ -125,7 +123,7 @@ namespace KittyCrush
 	/**
     *@brief Input cin with error handling
     *@param Saisie the variable that you will change
-    *@param Error the error message if the cin fails.
+    *@param Erreur the error message if the cin fails.
     *@param Invite the message displayed before the invite
     */
     template <typename Type>
@@ -450,7 +448,7 @@ namespace KittyCrush
 	/**
     *@brief Check if the move is valid
     *@param Grid check it with grid's help
-    *@param CPosition the position of the number you want to move
+    *@param Pos the position of the number you want to move
     *@param Direction where do you want to move this number
     */
 	bool IsValidMove (const CMat & Grid, const CPosition & Pos, char Direction)
@@ -481,7 +479,7 @@ namespace KittyCrush
     *@brief Make a move
     *@param Grid in the grid
     *@param Pos the number you will move
-    *@param where you want to move it
+    *@param Direction where you want to move it
     */
     void MakeAMove (CMat & Grid, const CPosition & Pos, char Direction)
     {
@@ -503,7 +501,7 @@ namespace KittyCrush
 	/**
     *@brief At least three numbers in a column
     *@param Grid in the Grid
-    *@param CPosition check every case of the grid
+    *@param Pos check every case of the grid
     *@param HowMany count the numbers in a column
     */
     bool AtLeastThreeInAColumn (const CMat & Grid, CPosition & Pos, unsigned & HowMany)
@@ -552,7 +550,7 @@ namespace KittyCrush
 	/**
     *@brief At least three numbers in a row
     *@param Grid in the Grid
-    *@param CPosition check every case of the grid
+    *@param Pos check every case of the grid
     *@param HowMany count the numbers in a column
     */
     bool AtLeastThreeInARow (const CMat & Grid, CPosition & Pos, unsigned & HowMany)
@@ -589,7 +587,7 @@ namespace KittyCrush
     /**
     *@brief Removal in column
     *@param Grid game's grid
-    *@param CPosition the position of a number to remove
+    *@param Pos the position of a number to remove
     *@param HowMany how many numbers do it have to remove
     */
     void RemovalInColumn (CMat & Grid, const CPosition & Pos, unsigned HowMany)
@@ -613,7 +611,7 @@ namespace KittyCrush
     /**
     *@brief Removal in Row
     *@param Grid game's grid
-    *@param CPosition the position of a number to remove
+    *@param Pos the position of a number to remove
     *@param HowMany how many numbers do it have to remove
     */
     void RemovalInRow (CMat & Grid, const CPosition & Pos, unsigned HowMany)
@@ -775,7 +773,7 @@ namespace KittyCrush
     } // ExistingSave ()
 
 
-
+	/** @brief used to crpyt data to save */
 	const CVStr KeyTab {"0001101101","0101100010", "1000010101", "0000000110" }; // Le tableau des clés qui serviront a coder les données
     /**
     *@brief Do a exclusive or in a binary string
@@ -966,7 +964,7 @@ namespace KittyCrush
     *@brief Check if the number is in column or row in a cin
     *@param Result check if the input isn't superior than grid's size
     *@param Grid the game's grid
-    *@param An invit before the cin
+    *@param Invite An invit before the cin
     */
 	void SaisieLigneCol (unsigned & Result, const CMat & Grid, const string & Invite)
 	{
